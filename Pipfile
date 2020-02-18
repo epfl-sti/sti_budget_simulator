@@ -9,6 +9,7 @@ verify_ssl = true
 pandas = "*"
 pytest = "*"
 autopep8 = "*"
+xlrd = "*"
 
 [requires]
 python_version = "3.8"
