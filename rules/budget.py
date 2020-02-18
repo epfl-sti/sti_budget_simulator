@@ -146,7 +146,7 @@ def main(params):
     start_date = params['start_date']
     end_date = params['end_date']
 
-    return_value = pd.DataFrame(columns=['CF', 'date', 'budget', 'rule','note'])
+    return_value = pd.DataFrame(columns=['CF', 'date', 'budget', 'rule', 'note'])
 
     simulation_period = pd.date_range(start=start_date, end=end_date, freq="M")
     for current_month in simulation_period:
@@ -159,8 +159,8 @@ def main(params):
                 current_note = period[3]
                 break
 
-        return_value = return_value.append({'CF': params['CF'], 'date': current_month, 'budget': current_budget, 'rule': 'budget', 'note':current_note}, ignore_index=True)
-    return  milestones, return_value
+        return_value = return_value.append({'CF': params['CF'], 'date': current_month, 'budget': current_budget, 'rule': 'budget', 'note': current_note}, ignore_index=True)
+    return milestones, return_value
 
 
 if __name__ == "__main__":
