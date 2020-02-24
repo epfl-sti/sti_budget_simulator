@@ -58,7 +58,8 @@ def main(params):
     po_full = po_step3 + pd.offsets.DateOffset(years=1)
 
     # calculate a theorical retirement date
-    retirement = po_promotion+pd.offsets.DateOffset(years=65)
+    DOB = params.get('DOB', po_promotion)
+    retirement = DOB + pd.offsets.DateOffset(years=65)
 
     milestones = {
         'patt_promotion': patt_promotion,
@@ -84,7 +85,7 @@ def main(params):
     # Period 1 is between the PATT promotion and the first bump in the budget
     p1_from = patt_promotion
     p1_to = first_bump_budget_increase_date
-    p1_budget = settings.PATT_YEARLY_BUDGET / 12
+    p1_budget = params.get('PATT_yearly_budget' , settings.PATT_YEARLY_BUDGET) / 12
     p1_note = "Between the PATT promotion and the first bump in the budget"
     periods.append((p1_from, p1_to, p1_budget, p1_note))
 
@@ -99,7 +100,7 @@ def main(params):
     p3 = (pa_promotion, po_promotion)
     p3_from = pa_promotion
     p3_to = po_promotion
-    pa_yearly_budget = (settings.PATT_YEARLY_BUDGET + settings.PO_YEARLY_BUDGET) / 2
+    pa_yearly_budget = params.get('PA_yearly_budget', (params.get('PATT_yearly_budget', settings.PATT_YEARLY_BUDGET) + params.get('PO_yearly_budget', settings.PO_YEARLY_BUDGET)) / 2)
     p3_budget = pa_yearly_budget / 12
     p3_note = "Between the promotion as PA and the promotion as PO"
     periods.append((p3_from, p3_to, p3_budget, p3_note))
@@ -107,7 +108,7 @@ def main(params):
     # Period 4 is the first year after the promotion as PO
     p4_from = po_promotion
     p4_to = po_step1
-    pa_to_po_yearly_budget_increase = (settings.PO_YEARLY_BUDGET - pa_yearly_budget) / settings.NUMBER_OF_YEARS_TO_REACH_PO_BUDGET
+    pa_to_po_yearly_budget_increase = (params.get('PO_yearly_budget',settings.PO_YEARLY_BUDGET) - pa_yearly_budget) / settings.NUMBER_OF_YEARS_TO_REACH_PO_BUDGET
     p4_budget = p3_budget + (pa_to_po_yearly_budget_increase / 12)
     p4_note = "1st year after the promotion as PO"
     periods.append((p4_from, p4_to, p4_budget, p4_note))
@@ -138,7 +139,7 @@ def main(params):
     p8 = (po_full, retirement)
     p8_from = po_full
     p8_to = retirement
-    p8_budget = settings.PO_YEARLY_BUDGET / 12
+    p8_budget = params.get('PO_yearly_budget',settings.PO_YEARLY_BUDGET) / 12
     p8_note = "Full PO budget"
     periods.append((p8_from, p8_to, p8_budget, p8_note))
 
@@ -165,7 +166,6 @@ def main(params):
 
 if __name__ == "__main__":
     parameters = {}
-    parameters['initial_budget'] = 0
     parameters['start_date'] = datetime.datetime(2019, 1, 1)
     parameters['end_date'] = datetime.datetime(2029, 1, 1)
     parameters['academic_rank'] = 'PA'
