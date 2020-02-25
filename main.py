@@ -28,6 +28,10 @@ def main():
         run_params['academic_rank'] = row['academic rank']
         run_params['in_rank_since'] = row['in rank since']
         run_params['CF'] = row['CF']
+        run_params['DOB'] = row['DOB']
+        run_params['PATT_yearly_budget'] = row['PATT yearly budget']
+        run_params['PA_yearly_budget'] = row['PA yearly budget']
+        run_params['PO_yearly_budget'] = row['PO yearly budget']
         milestones, current_df = budget.main(run_params)
 
         return_value = pd.concat([return_value, current_df], ignore_index=True)
