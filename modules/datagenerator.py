@@ -64,6 +64,13 @@ def __dump_to_cache(df):
     df.to_pickle(settings.CACHE_FILE_PATH)
 
 
+def get_data():
+    """
+    Returns the cached data from disk
+    """
+    return pd.read_pickle(settings.CACHE_FILE_PATH)
+
+
 def main():
     sap = __get_SAP_extract()
     faculty_members = __get_faculty_members()
