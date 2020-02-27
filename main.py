@@ -13,15 +13,15 @@ def __generate_parameters():
     df = datagenerator.get_data()
 
     # We don't need all the data from the cached version
-    df.drop(columns=['sciper'], inplace=True)
+    df.drop(columns=["sciper"], inplace=True)
 
     # One column needs to be renamed
-    df.rename(columns={'appointment': 'in rank since', 'DoB': 'DOB'}, inplace=True)
+    df.rename(columns={"appointment": "in rank since", "DoB": "DOB"}, inplace=True)
 
     # empty columns need to be added
-    df['PATT yearly budget'] = None
-    df['PA yearly budget'] = None
-    df['PO yearly budget'] = None
+    df["PATT yearly budget"] = None
+    df["PA yearly budget"] = None
+    df["PO yearly budget"] = None
 
     # dump as parameters file
     df.to_excel(settings.PARAMETERS_FILE, index=False)
@@ -47,18 +47,18 @@ def main():
 
     for index, row in params.iterrows():
         run_params = {}
-        run_params['start_date'] = simulation_start
-        run_params['end_date'] = simulation_end
-        run_params['academic_rank'] = row['academic rank']
-        run_params['in_rank_since'] = row['in rank since']
-        run_params['CF'] = row['CF']
-        run_params['DOB'] = row['DOB']
-        if not math.isnan(row['PATT yearly budget']):
-            run_params['PATT_yearly_budget'] = row['PATT yearly budget']
-        if not math.isnan(row['PA yearly budget']):
-            run_params['PA_yearly_budget'] = row['PA yearly budget']
-        if not math.isnan(row['PO yearly budget']):
-            run_params['PO_yearly_budget'] = row['PO yearly budget']
+        run_params["start_date"] = simulation_start
+        run_params["end_date"] = simulation_end
+        run_params["academic_rank"] = row["academic rank"]
+        run_params["in_rank_since"] = row["in rank since"]
+        run_params["CF"] = row["CF"]
+        run_params["DOB"] = row["DOB"]
+        if not math.isnan(row["PATT yearly budget"]):
+            run_params["PATT_yearly_budget"] = row["PATT yearly budget"]
+        if not math.isnan(row["PA yearly budget"]):
+            run_params["PA_yearly_budget"] = row["PA yearly budget"]
+        if not math.isnan(row["PO yearly budget"]):
+            run_params["PO_yearly_budget"] = row["PO yearly budget"]
         milestones, current_df = budget.main(run_params)
 
         return_value = pd.concat([return_value, current_df], ignore_index=True)
