@@ -11,6 +11,8 @@ pandas = "*"
 pytest = "*"
 autopep8 = "*"
 xlrd = "*"
+numpy = "*"
+openpyxl = "*"
 
 [requires]
 python_version = "3.8"
