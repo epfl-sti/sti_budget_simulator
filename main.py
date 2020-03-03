@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 
-from rules import budget
+from rules import budget, adjustments
 from modules import datagenerator
 from settings import main as settings
 
@@ -37,13 +37,14 @@ def __dump_output(df):
 
 
 def main():
+    return_value = pd.DataFrame()
+
+    # Budget Rules
     __generate_parameters()
 
     params = __get_parameters()
     simulation_start = settings.START_DATE
     simulation_end = settings.END_DATE
-
-    return_value = pd.DataFrame()
 
     for index, row in params.iterrows():
         run_params = {}
@@ -62,6 +63,14 @@ def main():
         milestones, current_df = budget.main(run_params)
 
         return_value = pd.concat([return_value, current_df], ignore_index=True)
+
+    # Adjustments
+    run_params = {
+        'start_date': simulation_start,
+        'end_date': simulation_end
+    }
+    df_adjusments = adjustments.main(run_params)
+    return_value = pd.concat([return_value, df_adjusments], ignore_index=True)
 
     __dump_output(return_value)
 
