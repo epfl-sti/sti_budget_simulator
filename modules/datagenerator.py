@@ -3,6 +3,7 @@ import os
 import sys
 
 import pandas as pd
+import numpy as np
 
 PROJECT_FOLDER = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 os.chdir(PROJECT_FOLDER)
@@ -75,6 +76,9 @@ def main():
     sap = __get_SAP_extract()
     faculty_members = __get_faculty_members()
     result = sap.merge(faculty_members, on="sciper", how="left")
+    result.loc[result['academic rank']=='PATT','PATT promotion'] = result['appointment']
+    result.loc[result['academic rank']=='PA','PA promotion'] = result['appointment']
+    result.loc[result['academic rank']=='PO','PO promotion'] = result['appointment']
     __dump_to_cache(result)
 
 

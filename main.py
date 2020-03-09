@@ -13,12 +13,13 @@ def __generate_parameters():
     df = datagenerator.get_data()
 
     # We don't need all the data from the cached version
-    df.drop(columns=["sciper"], inplace=True)
+    df.drop(columns=["sciper", "academic rank", "appointment"], inplace=True)
 
     # One column needs to be renamed
-    df.rename(columns={"appointment": "in rank since", "DoB": "DOB"}, inplace=True)
+    df.rename(columns={"DoB": "DOB"}, inplace=True)
 
     # empty columns need to be added
+    df["retirement"] = None
     df["PATT yearly budget"] = None
     df["PA yearly budget"] = None
     df["PO yearly budget"] = None
@@ -50,10 +51,17 @@ def main():
         run_params = {}
         run_params["start_date"] = simulation_start
         run_params["end_date"] = simulation_end
-        run_params["academic_rank"] = row["academic rank"]
-        run_params["in_rank_since"] = row["in rank since"]
         run_params["CF"] = row["CF"]
         run_params["DOB"] = row["DOB"]
+        if not pd.isnull(row['PATT promotion']):
+            run_params['PATT promotion'] = row['PATT promotion']
+        if not pd.isnull(row['PA promotion']):
+            run_params['PA promotion'] = row['PA promotion']
+        if not pd.isnull(row['PO promotion']):
+            run_params['PO promotion'] = row['PO promotion']
+        if not pd.isnull(row['retirement']):
+            run_params['retirement'] = row['retirement']
+
         if not math.isnan(row["PATT yearly budget"]):
             run_params["PATT_yearly_budget"] = row["PATT yearly budget"]
         if not math.isnan(row["PA yearly budget"]):
