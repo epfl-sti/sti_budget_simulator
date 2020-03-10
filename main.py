@@ -1,13 +1,17 @@
-import pandas as pd
-import numpy as np
+import logging
 import math
 
-from rules import budget, adjustments
+import numpy as np
+import pandas as pd
+
 from modules import datagenerator
+from rules import adjustments, budget
 from settings import main as settings
 
+logger = logging.getLogger(__name__)
 
 def __generate_parameters():
+    logger.info("started generating parameters file")
     # generate the base information based on the Excel file Audrey provided
     datagenerator.main()
     df = datagenerator.get_data()
@@ -26,18 +30,27 @@ def __generate_parameters():
 
     # dump as parameters file
     df.to_excel(settings.PARAMETERS_FILE, index=False)
+    logger.info("done")
 
 
 def __get_parameters():
+    logger.info("getting parameters from file")
+    logger.debug("Parameters file: {}".format(settings.PARAMETERS_FILE))
     params = pd.read_excel(settings.PARAMETERS_FILE)
+
+    logger.info("done")
     return params
 
 
 def __dump_output(df):
+    logger.info("Dumping output to file")
+    logger.debug("file path: {}".format(settings.OUTPUT_FILE))
     df.to_csv(settings.OUTPUT_FILE, index=False)
+    logger.info("done")
 
 
 def main():
+    logger.info("Started running the simulation")
     return_value = pd.DataFrame()
 
     # Budget Rules
@@ -47,6 +60,7 @@ def main():
     simulation_start = settings.START_DATE
     simulation_end = settings.END_DATE
 
+    logger.info("Started running the budget rules")
     for index, row in params.iterrows():
         run_params = {}
         run_params["start_date"] = simulation_start
@@ -71,14 +85,17 @@ def main():
         milestones, current_df = budget.main(run_params)
 
         return_value = pd.concat([return_value, current_df], ignore_index=True)
+        logger.info("done running the budget rules")
 
     # Adjustments
+    logger.info("Started running the adjustments rules")
     run_params = {
         'start_date': simulation_start,
         'end_date': simulation_end
     }
     df_adjusments = adjustments.main(run_params)
     return_value = pd.concat([return_value, df_adjusments], ignore_index=True)
+    logger.info("done")
 
     __dump_output(return_value)
 
