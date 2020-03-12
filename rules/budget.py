@@ -73,7 +73,7 @@ def main(params):
 
     prof.PATT_budget = params.get('PATT_yearly_budget' , settings.PATT_YEARLY_BUDGET) / 12
     prof.PO_budget = params.get('PO_yearly_budget', settings.PO_YEARLY_BUDGET) / 12
-    prof.PA_budget = params.get('PA_yearly_budget', mean([prof.PATT_budget, prof.PO_budget])) / 12
+    prof.PA_budget = params.get('PA_yearly_budget', mean([prof.PATT_budget, prof.PO_budget])*12) / 12
 
     # calculate the date of the first bump in budget
     first_bump_budget_increase_date = prof.PATT_promotion+pd.offsets.DateOffset(months=settings.FIRST_STEP_BUDGET_PERIOD)
