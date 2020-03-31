@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 from statistics import mean
 import sys
@@ -11,6 +12,8 @@ project_folder = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 os.chdir(project_folder)
 sys.path.insert(0, project_folder)
 from settings import budget as settings
+
+logger = logging.getLogger(__name__)
 
 class __prof(object):
     def __init__(self):
@@ -38,6 +41,8 @@ def main(params):
     """
 
     # TODO: check the parameters to make sure we have all the information we will be using
+
+    logger.info("Starting budget simulation for CF {}".format(params['CF']))
 
     prof = __prof()
     prof.CF = params['CF']
@@ -102,7 +107,7 @@ def main(params):
         'po_step2': po_step2,
         'po_step3': po_step3,
         'po_full': po_full,
-        'retirement': prof.DoB
+        'retirement': prof.retirementDate
     }
 
     # Now that we have the various milstones, we can build a list of periods with the required information.

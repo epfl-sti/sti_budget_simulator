@@ -49,9 +49,41 @@ def __dump_output(df):
     logger.info("done")
 
 
+def __dump_milestones(milestones):
+    """
+    expected content of dictionaries
+    'DoB'
+    'patt_promotion'
+    'first_bump_budget_increase_date'
+    'pa_promotion'
+    'po_promotion'
+    'po_step1
+    'po_step2'
+    'po_step3'
+    'po_full'
+    'retirement'
+    """
+    logger.info("dumping milestones to disk")
+    logger.debug("output file path: {}".format(settings.MILESTONES_OUTPUT_FILE))
+    logger.debug("Number of CFs: {}".format(len(milestones)))
+
+    columns = ['CF', 'DoB', 'patt_promotion', 'pa_promotion', 'po_promotion', 'retirement']
+    df = pd.DataFrame(columns=columns)
+    for key, value in milestones.items():
+        CF = key
+        DoB = value['DoB']
+        patt_promotion = value['patt_promotion']
+        pa_promotion = value['pa_promotion']
+        po_promotion = value['po_promotion']
+        retirement = value['retirement']
+        df.loc[len(df)] = [CF, DoB, patt_promotion, pa_promotion, po_promotion, retirement]
+    df.to_csv(settings.MILESTONES_OUTPUT_FILE, index=False)
+
+
 def main():
     logger.info("Started running the simulation")
     return_value = pd.DataFrame()
+    all_milestones = {}
 
     # Budget Rules
     # __generate_parameters()
@@ -85,7 +117,10 @@ def main():
         milestones, current_df = budget.main(run_params)
 
         return_value = pd.concat([return_value, current_df], ignore_index=True)
-        logger.info("done running the budget rules")
+        all_milestones[row["CF"]] = milestones
+
+    __dump_milestones(all_milestones)
+    logger.info("done")
 
     # Fixed budgets
     logger.info("Running the fixed budgets rules")
