@@ -67,10 +67,11 @@ def main(params):
             prof.PA_promotion = prof.PO_promotion - pd.offsets.DateOffset(months=settings.PA_TO_PO_PERIOD)
 
     if prof.PO_promotion is None:
-        if prof.PATT_promotion is not None:
-            prof.PO_promotion = prof.PATT_promotion + pd.offsets.DateOffset(months=settings.PATT_TO_PA_PERIOD) + pd.offsets.DateOffset(months=settings.PA_TO_PO_PERIOD)
-        elif prof.PA_promotion is not None:
+        # We have decided to calculate from the PA promotion date instead of the PATT promotion date because the PA promotion is "closer" that PATT (hence we have a better chance to know it)
+        if prof.PA_promotion is not None:
             prof.PO_promotion = prof.PA_promotion + pd.offsets.DateOffset(months=settings.PA_TO_PO_PERIOD)
+        elif prof.PATT_promotion is not None:
+            prof.PO_promotion = prof.PATT_promotion + pd.offsets.DateOffset(months=settings.PATT_TO_PA_PERIOD) + pd.offsets.DateOffset(months=settings.PA_TO_PO_PERIOD)
 
     prof.PATT_budget = params.get('PATT_yearly_budget' , settings.PATT_YEARLY_BUDGET) / 12
     prof.PO_budget = params.get('PO_yearly_budget', settings.PO_YEARLY_BUDGET) / 12
