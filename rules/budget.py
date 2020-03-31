@@ -45,7 +45,8 @@ def main(params):
     prof.retirementDate = params.get('retirement', None)
 
     if prof.DoB is not None and prof.retirementDate is None:
-        prof.retirementDate = prof.DoB + pd.offsets.DateOffset(years=65)
+        # The retirement date should be at the end of the year of the 'real' retirement date
+        prof.retirementDate = datetime.datetime((prof.DoB + pd.offsets.DateOffset(years=65)).year, 12, 31)
     if prof.DoB is None and prof.retirementDate is not None:
         prof.DoB = prof.retirementDate - pd.offsets.DateOffset(years=65)
 
