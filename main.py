@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from modules import datagenerator
-from rules import adjustments, budget
+from rules import adjustments, budget, fixed_budget
 from settings import main as settings
 
 logger = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ def main():
     return_value = pd.DataFrame()
 
     # Budget Rules
-    __generate_parameters()
+    # __generate_parameters()
 
     params = __get_parameters()
     simulation_start = settings.START_DATE
@@ -86,6 +86,17 @@ def main():
 
         return_value = pd.concat([return_value, current_df], ignore_index=True)
         logger.info("done running the budget rules")
+
+    # Fixed budgets
+    logger.info("Running the fixed budgets rules")
+    run_params = {
+        'start_date': simulation_start,
+        'end_date': simulation_end,
+        'ledger': return_value
+    }
+    df_fixed_budgets = fixed_budget.main(run_params)
+    return_value = pd.concat([return_value, df_fixed_budgets], ignore_index=True)
+    logger.info('done')
 
     # Adjustments
     logger.info("Started running the adjustments rules")
