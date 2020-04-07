@@ -11,7 +11,7 @@ os.chdir(project_folder)
 sys.path.insert(0, project_folder)
 from settings import fixed_budget as settings
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 def __get_fixed_budgets():
