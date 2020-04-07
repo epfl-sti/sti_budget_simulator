@@ -1,8 +1,9 @@
+import calendar
 import datetime
 import logging
 import os
-from statistics import mean
 import sys
+from statistics import mean
 
 import pandas as pd
 from dateutil import rrule
@@ -51,7 +52,10 @@ def main(params):
 
     if prof.DoB is not None and prof.retirementDate is None:
         # The retirement date should be at the end of the year of the 'real' retirement date
-        prof.retirementDate = datetime.datetime((prof.DoB + pd.offsets.DateOffset(years=65)).year, 12, 31)
+        prof.retirementDate = prof.DoB + pd.offsets.DateOffset(years=65)
+        last_day_of_month = calendar.monthrange(prof.retirementDate.year, prof.retirementDate.month)[1]
+        prof.retirementDate = datetime.datetime(prof.retirementDate.year, prof.retirementDate.month, last_day_of_month)
+
     if prof.DoB is None and prof.retirementDate is not None:
         prof.DoB = prof.retirementDate - pd.offsets.DateOffset(years=65)
 
