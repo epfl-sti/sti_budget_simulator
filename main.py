@@ -4,34 +4,10 @@ import math
 import numpy as np
 import pandas as pd
 
-from modules import datagenerator
 from rules import adjustments, budget, fixed_budget
 from settings import main as settings
 
 logger = logging.getLogger(__name__)
-
-
-def __generate_parameters():
-    logger.info("started generating parameters file")
-    # generate the base information based on the Excel file Audrey provided
-    datagenerator.main()
-    df = datagenerator.get_data()
-
-    # We don't need all the data from the cached version
-    df.drop(columns=["sciper", "academic rank", "appointment"], inplace=True)
-
-    # One column needs to be renamed
-    df.rename(columns={"DoB": "DOB"}, inplace=True)
-
-    # empty columns need to be added
-    df["retirement"] = None
-    df["PATT yearly budget"] = None
-    df["PA yearly budget"] = None
-    df["PO yearly budget"] = None
-
-    # dump as parameters file
-    df.to_excel(settings.PARAMETERS_FILE, index=False)
-    logger.info("done")
 
 
 def __get_parameters():
