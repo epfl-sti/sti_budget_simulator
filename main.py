@@ -10,6 +10,7 @@ from settings import main as settings
 
 logger = logging.getLogger(__name__)
 
+
 def __generate_parameters():
     logger.info("started generating parameters file")
     # generate the base information based on the Excel file Audrey provided
@@ -67,17 +68,46 @@ def __dump_milestones(milestones):
     logger.debug("output file path: {}".format(settings.MILESTONES_OUTPUT_FILE))
     logger.debug("Number of CFs: {}".format(len(milestones)))
 
-    columns = ['CF', 'DoB', 'patt_promotion', 'pa_promotion', 'po_promotion', 'retirement']
+    columns = [
+        "CF",
+        "DoB",
+        "patt_promotion",
+        "pa_promotion",
+        "po_promotion",
+        "retirement",
+    ]
     df = pd.DataFrame(columns=columns)
     for key, value in milestones.items():
         CF = key
-        DoB = value['DoB']
-        patt_promotion = value['patt_promotion']
-        pa_promotion = value['pa_promotion']
-        po_promotion = value['po_promotion']
-        retirement = value['retirement']
-        df.loc[len(df)] = [CF, DoB, patt_promotion, pa_promotion, po_promotion, retirement]
+        DoB = value["DoB"]
+        patt_promotion = value["patt_promotion"]
+        pa_promotion = value["pa_promotion"]
+        po_promotion = value["po_promotion"]
+        retirement = value["retirement"]
+        df.loc[len(df)] = [
+            CF,
+            DoB,
+            patt_promotion,
+            pa_promotion,
+            po_promotion,
+            retirement,
+        ]
     df.to_csv(settings.MILESTONES_OUTPUT_FILE, index=False)
+
+
+def __final_cleanup(df):
+    """
+    Performs the last operations on the final dataframe.
+    This includes:
+    * add a column named year aimed at easing the manipulation of data in Excel
+    """
+    logger.info("Starting final cleanup")
+
+    df["year"] = df["date"].dt.year
+    df["month"] = df["date"].dt.month
+
+    logger.info("done")
+    return df
 
 
 def main():
@@ -99,14 +129,14 @@ def main():
         run_params["end_date"] = simulation_end
         run_params["CF"] = row["CF"]
         run_params["DOB"] = row["DOB"]
-        if not pd.isnull(row['PATT promotion']):
-            run_params['PATT promotion'] = row['PATT promotion']
-        if not pd.isnull(row['PA promotion']):
-            run_params['PA promotion'] = row['PA promotion']
-        if not pd.isnull(row['PO promotion']):
-            run_params['PO promotion'] = row['PO promotion']
-        if not pd.isnull(row['retirement']):
-            run_params['retirement'] = row['retirement']
+        if not pd.isnull(row["PATT promotion"]):
+            run_params["PATT promotion"] = row["PATT promotion"]
+        if not pd.isnull(row["PA promotion"]):
+            run_params["PA promotion"] = row["PA promotion"]
+        if not pd.isnull(row["PO promotion"]):
+            run_params["PO promotion"] = row["PO promotion"]
+        if not pd.isnull(row["retirement"]):
+            run_params["retirement"] = row["retirement"]
 
         if not math.isnan(row["PATT yearly budget"]):
             run_params["PATT_yearly_budget"] = row["PATT yearly budget"]
@@ -125,23 +155,22 @@ def main():
     # Fixed budgets
     logger.info("Running the fixed budgets rules")
     run_params = {
-        'start_date': simulation_start,
-        'end_date': simulation_end,
-        'ledger': return_value
+        "start_date": simulation_start,
+        "end_date": simulation_end,
+        "ledger": return_value,
     }
     df_fixed_budgets = fixed_budget.main(run_params)
     return_value = pd.concat([return_value, df_fixed_budgets], ignore_index=True)
-    logger.info('done')
+    logger.info("done")
 
     # Adjustments
     logger.info("Started running the adjustments rules")
-    run_params = {
-        'start_date': simulation_start,
-        'end_date': simulation_end
-    }
+    run_params = {"start_date": simulation_start, "end_date": simulation_end}
     df_adjusments = adjustments.main(run_params)
     return_value = pd.concat([return_value, df_adjusments], ignore_index=True)
     logger.info("done")
+
+    return_value = __final_cleanup(return_value)
 
     __dump_output(return_value)
 
