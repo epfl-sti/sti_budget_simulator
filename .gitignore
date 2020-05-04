@@ -2,8 +2,9 @@
 .vscode
 __pycache__
 *.pyc
-out.csv
-~$*.xlsx
+.pytest_cache
+
 cache/*
+~$*.xlsx
+
 .git-crypt-key
-milestones.csv
