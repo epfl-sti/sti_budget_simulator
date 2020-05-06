@@ -4,7 +4,7 @@ import math
 import numpy as np
 import pandas as pd
 
-from rules import adjustments, budget, fixed_budget
+from rules import adjustments, budget, fixed_budget, yearly_budget
 from settings import main as settings
 
 logger = logging.getLogger(__name__)
@@ -144,6 +144,13 @@ def main():
     run_params = {"start_date": simulation_start, "end_date": simulation_end}
     df_adjusments = adjustments.main(run_params)
     return_value = pd.concat([return_value, df_adjusments], ignore_index=True)
+    logger.info("done")
+
+    # Yearly budgets
+    logger.info("Starting running the yearly budget rules")
+    run_params = {"start_date": simulation_start, "end_date": simulation_end}
+    df_yearly_budgets = yearly_budget.main(run_params)
+    return_value = pd.concat([return_value, df_yearly_budgets], ignore_index=True)
     logger.info("done")
 
     return_value = __final_cleanup(return_value)
