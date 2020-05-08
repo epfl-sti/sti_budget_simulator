@@ -9,7 +9,7 @@ import pandas as pd
 project_folder = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 os.chdir(project_folder)
 sys.path.insert(0, project_folder)
-from settings import fixed_budget as settings
+from settings import lab_negotiated_budgets as settings
 
 logger = logging.getLogger(__name__)
 
@@ -128,9 +128,9 @@ def main(parameters):
             try:
                 real_budget = fixed_budgets.loc[
                     (fixed_budgets["CF"] == current_CF)
-                    & (fixed_budgets['From'] <= current_date)
-                    & (fixed_budgets['To'] >= current_date),
-                     "budget"
+                    & (fixed_budgets["From"] <= current_date)
+                    & (fixed_budgets["To"] >= current_date),
+                    "budget",
                 ].iloc[0]
                 logger.debug("real_budget: {}".format(real_budget))
             except IndexError as ex:
@@ -177,7 +177,7 @@ def main(parameters):
                         "real_budget": real_budget,
                         "theorical_budget": calculated_budget,
                         "budget": adjustment,
-                        "rule": "fixed budget",
+                        "rule": "lab negotiated budgets",
                         "note": " ".join(notes),
                     },
                     ignore_index=True,

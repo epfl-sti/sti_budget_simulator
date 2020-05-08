@@ -4,7 +4,7 @@ import math
 import numpy as np
 import pandas as pd
 
-from rules import adjustments, budget, fixed_budget, yearly_budget
+from rules import adjustments, lab_budgets, lab_negotiated_budgets, non_lab_budgets
 from settings import main as settings
 
 logger = logging.getLogger(__name__)
@@ -16,6 +16,8 @@ def __dump_output(df):
     df.to_csv(settings.OUTPUT_FILE, index=False)
     logger.info("done")
 
+
+def __dump_milestones(milestones):
     df = pd.DataFrame(milestones)
     df.to_csv(settings.MILESTONES_OUTPUT_FILE, index=False)
 
@@ -47,7 +49,7 @@ def main(params):
         "start_date": params["simulation_start"],
         "end_date": params["simulation_end"],
     }
-    current_df, milestones = budget.main(run_params)
+    current_df, milestones = lab_budgets.main(run_params)
     return_value = pd.concat([return_value, current_df], ignore_index=True)
 
     __dump_milestones(milestones)
@@ -60,7 +62,7 @@ def main(params):
         "end_date": params["simulation_end"],
         "ledger": return_value,
     }
-    df_fixed_budgets = fixed_budget.main(run_params)
+    df_fixed_budgets = lab_negotiated_budgets.main(run_params)
     return_value = pd.concat([return_value, df_fixed_budgets], ignore_index=True)
     logger.info("done")
 
@@ -80,7 +82,7 @@ def main(params):
         "start_date": params["simulation_start"],
         "end_date": params["simulation_end"],
     }
-    df_yearly_budgets = yearly_budget.main(run_params)
+    df_yearly_budgets = non_lab_budgets.main(run_params)
     return_value = pd.concat([return_value, df_yearly_budgets], ignore_index=True)
     logger.info("done")
 

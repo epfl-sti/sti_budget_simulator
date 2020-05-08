@@ -11,7 +11,7 @@ project_folder = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 os.chdir(project_folder)
 sys.path.insert(0, project_folder)
 
-from settings import yearly_budget as settings
+from settings import non_lab_budgets as settings
 
 logger = logging.getLogger(__name__)
 
@@ -47,10 +47,11 @@ def __calculate_ledger(df, params):
                 if (
                     current_time_point >= params["start_date"]
                     and current_time_point <= params["end_date"]
+                    and cf_row[year] != 0
                 ):
                     CF = cf_row["CF"]
                     budget = cf_row[year] / 12
-                    rule = "yearly budget"
+                    rule = "non-lab budgets"
                     row_dict = {
                         "CF": CF,
                         "date": current_time_point,

@@ -18,22 +18,34 @@ def __get_adjustments_rules():
     df = pd.read_excel(settings.ADJUSTMENTS_RULES_FILE_PATH)
     return df
 
+
 def main(params):
     logger.info("Started main adjustments routine")
     logger.debug(params)
 
-    return_value = pd.DataFrame(columns=['CF', 'date', 'budget', 'rule', 'note'])
+    return_value = pd.DataFrame(columns=["CF", "date", "budget", "rule", "note"])
 
-    simulation_period = pd.date_range(start=params['start_date'], end=params['end_date'], freq="M")
+    simulation_period = pd.date_range(
+        start=params["start_date"], end=params["end_date"], freq="M"
+    )
 
     rules = __get_adjustments_rules()
     for date in simulation_period:
         logger.debug("Checking rules for simulation date {}".format(date))
         for index, rule in rules.iterrows():
-            logger.debug("Rule applies from {} to {}".format(rule['From'], rule['To']))
-            if date >= rule['From'] and date <= rule['To']:
-                logger.debug("Adding {} to return value".format(rule['Monthly amount']))
-                return_value = return_value.append({'CF': rule['CF'], 'date': date, 'budget': rule['Monthly amount'], 'rule': 'adjustments', 'note': rule['Note']}, ignore_index=True)
+            logger.debug("Rule applies from {} to {}".format(rule["From"], rule["To"]))
+            if date >= rule["From"] and date <= rule["To"]:
+                logger.debug("Adding {} to return value".format(rule["Monthly amount"]))
+                return_value = return_value.append(
+                    {
+                        "CF": rule["CF"],
+                        "date": date,
+                        "budget": rule["Monthly amount"],
+                        "rule": "adjustments",
+                        "note": rule["Note"],
+                    },
+                    ignore_index=True,
+                )
     logger.info("finished")
     return return_value
 

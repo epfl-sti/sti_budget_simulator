@@ -13,7 +13,7 @@ from dateutil import rrule
 project_folder = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 os.chdir(project_folder)
 sys.path.insert(0, project_folder)
-from settings import budget as settings
+from settings import lab_budgets as settings
 
 logger = logging.getLogger(__name__)
 
@@ -295,7 +295,7 @@ def calculate_ledger_for_CF(params):
                 "CF": params["CF"],
                 "date": current_month,
                 "budget": current_budget,
-                "rule": "budget",
+                "rule": "lab budgets",
                 "note": current_note,
             },
             ignore_index=True,
