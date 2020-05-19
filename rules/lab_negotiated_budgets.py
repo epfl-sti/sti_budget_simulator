@@ -56,7 +56,7 @@ def __get_calculated_budgets(ledger, start, end):
     logger.debug("End date: {}".format(end))
 
     ledger = ledger.loc[
-        (ledger["rule"] == "budget")
+        (ledger["rule"] == "lab budgets")
         & (ledger["date"] >= start)
         & (ledger["date"] <= end)
     ]
