@@ -13,25 +13,27 @@ logger = logging.getLogger(__name__)
 def __dump_output(df):
     logger.info("Dumping output to file")
     logger.debug("file path: {}".format(settings.OUTPUT_FILE))
-    df.to_csv(settings.OUTPUT_FILE, index=False)
+    df.to_excel(settings.OUTPUT_FILE, index=False)
     logger.info("done")
 
 
 def __dump_milestones(milestones):
     df = pd.DataFrame(milestones)
-    df.to_csv(settings.MILESTONES_OUTPUT_FILE, index=False)
+    df.to_excel(settings.MILESTONES_OUTPUT_FILE, index=False)
 
 
 def __final_cleanup(df):
     """
     Performs the last operations on the final dataframe.
     This includes:
-    * add a column named year aimed at easing the manipulation of data in Excel
+    * add columns named year and month aimed at easing the manipulation of data in Excel
     """
     logger.info("Starting final cleanup")
 
     df["year"] = df["date"].dt.year
     df["month"] = df["date"].dt.month
+
+    df = df[["CF", "date", "year", "month", "budget", "rule", "note"]]
 
     logger.info("done")
     return df
